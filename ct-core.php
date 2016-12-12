@@ -33,7 +33,7 @@ define( 'CT_CHILD', trailingslashit( get_stylesheet_directory() ) );
  * Helpel function ChildThemes Core
  * Use this can be as static function and callable.
  */
-require CT_DIR . 'functions.php';
+require CT_PATH . 'functions.php';
 
 /**
  * The core plugin class that is used to define theme fetures,

@@ -186,7 +186,7 @@ class CT_Core {
 	 * @access   public
 	 */
 	public function set_locale() {
-		load_plugin_textdomain( 'ctcore', false, CT_DIR . 'languages' );
+		load_plugin_textdomain( 'ctcore', false, CT_PATH . 'languages' );
 	}
 
   /**

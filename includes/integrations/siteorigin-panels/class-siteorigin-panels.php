@@ -19,7 +19,7 @@ class CT_Core_Siteorigin_Panels extends CT_Core_Integrations {
 	 */
   public function __construct() {
     $this->includes = array(
-
+     'class-siteorigin-panels-template.php'
     );
     $this->integration = 'siteorigin-panels';
     parent::__construct();

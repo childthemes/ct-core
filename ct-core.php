@@ -41,5 +41,5 @@ require CT_PATH . 'functions.php';
  */
 require CT_INC . 'class-ct-core.php';
 
-register_activation_hook( __FILE__, 'activate_mtcore' );
-register_deactivation_hook( __FILE__, 'deactivate_mtcore' );
+register_activation_hook( __FILE__, 'activate_ctcore' );
+register_deactivation_hook( __FILE__, 'deactivate_ctcore' );

@@ -16,16 +16,16 @@
  /**
   * The code that runs during plugin activation.
   */
- function activate_mtcore() {
-	 require CT_INC.'class-ct-core-install.php';
+ function activate_ctcore() {
+	 require CT_INC.'libraries/class-ct-core-install.php';
 	 new CT_Core_Install( 'activate' );
  }
 
 /**
  * The code that runs during plugin deactivation.
  */
-function deactivate_mtcore() {
-	require CT_INC.'class-ct-core-install.php';
+function deactivate_ctcore() {
+	require CT_INC.'libraries/class-ct-core-install.php';
 	new CT_Core_Install( 'deactivate' );
 }
 
@@ -38,8 +38,7 @@ function deactivate_mtcore() {
  */
 function ct_core_plugin_action_links($links) {
 	unset( $links['edit'] );
-	$links[] = '<a href="http://childthemes.net/" target="_blank">' . __('Get Themes', 'ctcore') . '</a>';
-	$links[] = '<a href="http://childthemes.net/support" target="_blank">' . __('Support', 'ctcore') . '</a>';
+	$links[] = '<a href="https://themeforest.net/user/childthemes" target="_blank">' . __('Download Themes', 'ctcore') . '</a>';
 	return $links;
 }
 add_action( 'plugin_action_links_'.CT_CORE, 'ct_core_plugin_action_links' );
@@ -101,11 +100,11 @@ function file_to_classname( $file, $prefix = '', $suffix = '' ) {
  	$class_name = implode('_', $class_name);
 
  	if ( ! empty( $prefix ) ) {
- 		$class_name = esc_attr($prefix).'_'.$class_name;
+ 		$class_name = esc_attr(ucfirst($prefix)).'_'.$class_name;
  	}
 
  	if ( ! empty( $suffix ) ) {
- 		$class_name = $class_name.'_'.esc_attr($suffix);
+ 		$class_name = $class_name.'_'.esc_attr(ucfirst($suffix));
  	}
 
  	return $class_name;
@@ -120,8 +119,46 @@ endif;
  */
 if ( !function_exists( 'add_admin_notice' ) ) :
 function add_admin_notice( $status, $cause, $args = array() ) {
-	include_once CT_INC . 'class-ct-core-notice.php';
+	include_once CT_INC . 'libraries/class-ct-core-notice.php';
 	new CT_Core_Notice( $status, $cause, $args );
+}
+endif;
+
+/**
+ * Get stylesheet file.
+ *
+ * @since 	1.0.0
+ * @return 	string  URL of CSS File
+ */
+if ( !function_exists( 'ctcore_css' ) ) :
+function ctcore_css( $name, $min = false ) {
+	$root = trailingslashit( 'assets/css' );
+  $file = sanitize_title( basename( $name, '.css' ) );
+  if ( false === SCRIPT_DEBUG || false !== $min ) {
+    if ( file_exists( CT_PATH.$root.$file.'.min.css' ) ) {
+      $file .= '.min';
+    }
+  }
+  return esc_url( CT_URI.$root.$file.'.css' );
+}
+endif;
+
+/**
+ * Get script file.
+ *
+ * @since 	1.0.0
+ * @return 	string  URL of JS File
+ */
+if ( !function_exists( 'ctcore_js' ) ) :
+function ctcore_js( $name, $min = false ) {
+	$root = trailingslashit( 'assets/js' );
+  $file = sanitize_title( basename( $name, '.js' ) );
+  if ( false === SCRIPT_DEBUG || false !== $min ) {
+    if ( file_exists( CT_PATH.$root.$file.'.min.js' ) ) {
+      $file .= '.min';
+    }
+  }
+  return esc_url( CT_URI.$root.$file.'.js' );
 }
 endif;
 
@@ -191,61 +228,6 @@ function get_meta_values( $key = '', $type = 'post', $status = 'any', $unique = 
     set_transient( $cache_key, $r, HOUR_IN_SECONDS );
   }
 	return $r;
-}
-endif;
-
-/**
- * Instance class loremipsum.
- *
- * @since  1.0.0
- *
- * @return object
- */
-function ctcore_lorem() {
-	/**
-	 * Lorem ipsum generator in PHP without dependencies.
-	 * Compatible with PHP 5.3+
-	 */
-	require_once CT_INC . 'class-ct-core-loremipsum.php';
-	return new CT_Core_Loremipsum();
-}
-
-/**
- * Generate Ramdom Lorem Ipsum
- *
- * @since  1.0.0
- *
- * @param  string $type  	  	Gnerated type word/sentence/paragraph
- * @param  integer $num  			The template we're looking for.
- * @param  boolean $force			Force regenerate, ignoring transient
- * @return string           	Random generated lorem ipsum
- */
-if ( !function_exists( 'get_lorem_ipsum' ) ) :
-function get_lorem_ipsum( $type = 'sentence', $num = 1, $force = false ) {
-	$text = '';
-	$lorem_key = 'CT_'.md5( serialize( array( $type, $num ) ) );
-
-	if ( $force || false === ( $text = get_transient( $lorem_key ) ) ) {
-		$lipsum = ctcore_lorem();
-		switch ($type) {
-			case 'word':
-			case 'words':
-				$text = $lipsum->words($num);
-				break;
-			case 'sentence':
-			case 'sentences':
-				$text = $lipsum->sentences($num);
-				break;
-			default:
-			case 'paragraph':
-			case 'paragraphs':
-				$text = $lipsum->paragraphs($num, 'p');
-				break;
-		}
-		if ( !$force )
-			set_transient( $lorem_key, $text, 365 * DAY_IN_SECONDS );
-	}
-	return $text;
 }
 endif;
 

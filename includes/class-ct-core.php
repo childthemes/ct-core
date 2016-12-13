@@ -89,6 +89,9 @@ class CT_Core {
 
 		add_action( 'plugins_loaded', array( $this, 'set_locale' ) );
 		add_action( 'admin_init', array( $this, 'set_features' ) );
+
+		add_action( 'wp_enqueue_scripts', array( $this, 'front_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
 	}
 
 	/**
@@ -186,7 +189,7 @@ class CT_Core {
     }
 
     if ( isset( $_GET['ctcore'] ) && $_GET['ctcore'] == 'updated' ) {
-      add_admin_notice( 'success', esc_html__( 'Child Themes Core feature for this theme has been updated', 'ctcore' ) );
+      add_admin_notice( 'success', esc_html__( 'Child Themes Core feature for current active theme has been updated', 'ctcore' ) );
     }
 
     $theme_features = $theme_features[0];
@@ -200,14 +203,32 @@ class CT_Core {
 	}
 
   /**
+	 * Frontpage area scripts & styles.
+	 *
+	 * @since     1.0.0
+	 */
+	public function front_scripts() {
+		wp_enqueue_style( CT_SLUG.'-front', ctcore_css( 'admin-widget-icon' ), array(), CT_VERSION );
+	}
+
+  /**
+	 * Admin area scripts & styles.
+	 *
+	 * @since     1.0.0
+	 */
+	public function admin_scripts( $hook ) {
+		wp_enqueue_style( CT_SLUG.'-admin', ctcore_css( 'admin-style' ), array(), CT_VERSION );
+	}
+
+  /**
 	 * Public get and check single feature object.
 	 *
 	 * @since     1.0.0
 	 * @return    boolean
 	 */
 	public function get( $feature = '' ) {
-		if ( isset( $this->$feature ) && in_array( $feature, $this->features ) ) {
-      return $this->$feature;
+		if ( method_exists( $this, $feature ) && in_array( $feature, $this->features ) ) {
+      return $this->{$feature};
     }
     return false;
 	}

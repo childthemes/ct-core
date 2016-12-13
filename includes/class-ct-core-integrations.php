@@ -10,6 +10,9 @@
  * @subpackage CT_Core/includes
  */
 
+// Exit if accessed directly
+if ( !defined( 'ABSPATH' ) ) exit;
+
 class CT_Core_Integrations {
 
   /**

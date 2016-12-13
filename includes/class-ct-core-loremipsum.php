@@ -370,3 +370,78 @@ class CT_Core_Loremipsum {
     return $strings;
   }
 }
+
+/**
+ * Instance class loremipsum.
+ *
+ * @since  1.0.0
+ *
+ * @return object
+ */
+function ctcore_lorem() {
+	/**
+	 * Lorem ipsum generator in PHP without dependencies.
+	 * Compatible with PHP 5.3+
+	 */
+	return new CT_Core_Loremipsum();
+}
+
+/**
+ * Generate Ramdom Lorem Ipsum
+ *
+ * @since  1.0.0
+ *
+ * @param  string $type  	  	Gnerated type word/sentence/paragraph
+ * @param  integer $num  			The template we're looking for.
+ * @param  boolean $force			Force regenerate, ignoring transient
+ * @return string           	Random generated lorem ipsum
+ */
+if ( !function_exists( 'get_lorem_ipsum' ) ) :
+function get_lorem_ipsum( $type = 'sentence', $num = 1, $force = false ) {
+	$text = '';
+	$lorem_key = 'CT_'.md5( serialize( array( $type, $num ) ) );
+
+	if ( $force || false === ( $text = get_transient( $lorem_key ) ) ) {
+		$lipsum = ctcore_lorem();
+		switch ($type) {
+			case 'word':
+			case 'words':
+				$text = $lipsum->words($num);
+				break;
+			case 'sentence':
+			case 'sentences':
+				$text = $lipsum->sentences($num);
+				break;
+			default:
+			case 'paragraph':
+			case 'paragraphs':
+				$text = $lipsum->paragraphs($num, 'p');
+				break;
+		}
+		if ( !$force )
+			set_transient( $lorem_key, $text, 365 * DAY_IN_SECONDS );
+	}
+	return $text;
+}
+endif;
+
+/**
+ * Add lorem ipsum generator as WP shortcode.
+ *
+ * @since   1.0.0
+ * @param   $atts      mixed
+ * @param   $content   string
+ *
+ * @return  string
+ */
+function ctcore_add_sc_loremipsum( $atts = array(), $content = null ) {
+
+  $atts = shortcode_atts( array(
+		'type'  => 'sentence',
+		'num'   => '',
+    'force' => ''
+	), $atts, 'loremipsum' );
+
+  return get_lorem_ipsum( $atts['type'], absint( $atts['num'] ), absint( $atts['force'] ) );
+}
+add_shortcode( 'loremipsum', 'ctcore_add_sc_loremipsum' );

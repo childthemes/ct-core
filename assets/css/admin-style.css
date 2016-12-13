@@ -1,0 +1,21 @@
+/* Override TinyMCE Shortcode Icon */
+i.mce-i-feedback:before {
+	content: "\f175";
+	font-family: dashicons;
+}
+i.mce-i-networking:before {
+	content: "\f325";
+	font-family: dashicons;
+}
+i.mce-i-editor-table:before {
+	content: "\f535";
+	font-family: dashicons;
+}
+i.mce-i-admin-media:before {
+	content: "\f104";
+	font-family: dashicons;
+}
+i.mce-i-portfolio:before {
+	content: "\f322";
+	font-family: dashicons;
+}

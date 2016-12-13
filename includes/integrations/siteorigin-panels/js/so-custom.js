@@ -984,11 +984,11 @@ module.exports = panels.view.dialog.extend( {
 		// Represent the cells
 		_.each( this.row.cells, function ( cell, i ) {
 
-      var colText = cell Math.round( ( cell * 100 ) * 12 ) / 100;
-			var newCell = $( this.cellPreviewTemplate( {
+      var cellTxt = Math.round( ( cell * 100 ) * 12 ) / 100;
+			var newCell = $( this.cellPreviewTemplate({
         weight: cell * 100,
-        weightname: colText > 1 ? colText+' Columns' : colText+' Column'
-      } ) );
+        weightname: cellTxt > 1 ? cellTxt+' Columns' : cellTxt+' Column'
+      }) );
 			rowPreview.append( newCell );
 
       thisDialog.scaleRowWidths();
@@ -1119,15 +1119,11 @@ module.exports = panels.view.dialog.extend( {
 		try {
 			var f = {
 				'cells': parseInt( this.$( '.row-set-form input[name="cells"]' ).val() ),
-				'ratio': parseFloat( this.$( '.row-set-form select[name="ratio"]' ).val() ),
 				'direction': this.$( '.row-set-form select[name="ratio_direction"]' ).val()
 			};
 
 			if ( _.isNaN( f.cells ) ) {
 				f.cells = 1;
-			}
-			if ( isNaN( f.ratio ) ) {
-				f.ratio = 1;
 			}
 			if ( f.cells < 1 ) {
 				f.cells = 1;
@@ -1142,22 +1138,12 @@ module.exports = panels.view.dialog.extend( {
 				this.$( '.row-set-form input[name="cells"]' ).val( f.cells );
 			}
 
-			this.$( '.row-set-form input[name="ratio"]' ).val( f.ratio );
-
 			var cells = [];
 			var cellCountChanged = (
 				this.row.cells.length !== f.cells
 			);
 
-			// Now, lets create some cells
-			var currentWeight = 1;
-			for ( var i = 0; i < f.cells; i ++ ) {
-				cells.push( currentWeight );
-				currentWeight *= f.ratio;
-			}
-
 			// Now lets make sure that the row weights add up to 1
-
 			var totalRowWeight = _.reduce( cells, function ( memo, weight ) {
 				return memo + weight;
 			} );

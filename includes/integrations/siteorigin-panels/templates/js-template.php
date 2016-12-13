@@ -291,16 +291,6 @@ $layouts = apply_filters( 'siteorigin_panels_prebuilt_layouts', array() );
 			<div class="row-set-form">
 				<?php
 				$cells_field = '<input type="number" min="1" max="12" name="cells"  class="so-row-field" value="2" />';
-				$ratios = apply_filters('siteorigin_panels_column_ratios', array(
-					'Container' => 1,
-					'Container Fluid' => 1,
-					'100% Width' => 1
-				) );
-				$ratio_field = '<select name="ratio" class="so-row-field">';
-				foreach( $ratios as $name => $value ) {
-					$ratio_field .= '<option value="' . esc_attr($value) .  '">' . esc_html($name) . '</option>';
-				}
-				$ratio_field .= '</select>';
 
 				$direction_field = '<select name="ratio_direction" class="so-row-field">';
 				$direction_field .= '<option value="right">' . esc_html__('Left to Right', 'siteorigin-panels') . '</option>';
@@ -315,10 +305,9 @@ $layouts = apply_filters( 'siteorigin_panels_prebuilt_layouts', array() );
 						array(
 							'<strong>$1</strong>',
 						),
-						__('1{Set row layout}: %1$s container type: %2$s going from %3$s', 'siteorigin-panels')
+						__('1{Set row layout}: %1$s going from %2$s', 'siteorigin-panels')
 					),
 					$cells_field,
-					$ratio_field,
 					$direction_field
 				);
 				echo '<button class="button-secondary set-row">' . esc_html__('Set', 'siteorigin-panels') . '</button>';

@@ -30,7 +30,10 @@ class CT_Core_Siteorigin_Panels extends CT_Core_Integrations {
 	 */
 	public function init() {
 
-    add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ), 1 );
+    add_action( 'wp_head', array( $this, 'removeinline_css' ), 11 );
+    add_action( 'wp_footer', array( $this, 'removeinline_css' ), 9 );
+
+    add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ), 99 );
     add_action( 'siteorigin_panel_enqueue_admin_styles', array( $this, 'add_admin_style' ) );
 
     add_action( 'admin_print_scripts-post-new.php', array( $this, 'add_admin_script' ), 9, 2 );
@@ -42,8 +45,12 @@ class CT_Core_Siteorigin_Panels extends CT_Core_Integrations {
 	  remove_action( 'customize_controls_print_footer_scripts', 'siteorigin_panels_customize_controls_print_footer_scripts' );
     add_action( 'customize_controls_print_footer_scripts', array( $this, 'js_templates' ) );
 
-    add_filter( 'siteorigin_panels_column_ratios', array( $this, 'set_aspect_ratio' ) );
+    add_filter( 'siteorigin_panels_row_style_fields', array( $this, 'set_row_fields' ), 99 );
 	}
+
+  public function removeinline_css() {
+    $GLOBALS['siteorigin_panels_inline_css'] = array();
+  }
 
   /**
 	 * Enqueue scripts and styles.
@@ -51,7 +58,9 @@ class CT_Core_Siteorigin_Panels extends CT_Core_Integrations {
 	 * @since  1.0.0
 	 */
   public function enqueue_styles() {
-
+    if ( wp_style_is( 'siteorigin-panels-front' ) ) {
+      wp_dequeue_style( 'siteorigin-panels-front' );
+    }
   }
 
   /**
@@ -90,12 +99,37 @@ class CT_Core_Siteorigin_Panels extends CT_Core_Integrations {
   }
 
   /**
-	 * Set custom aspect ration for row builder.
+	 * Set custom fields for row builder.
 	 *
 	 * @since  1.0.0
 	 */
-  public function set_aspect_ratio() {
-    return array( 'Container' => 1, 'Container Fluid' => 1, '100% Width' => 1 );
+  public function set_row_fields( $fields ) {
+
+    if ( isset( $fields['gutter'] ) )
+      unset( $fields['gutter'] );
+
+    if ( isset( $fields['row_stretch'] ) )
+      unset( $fields['row_stretch'] );
+
+    if ( isset( $fields['border_color'] ) )
+      unset( $fields['border_color'] );
+
+    if ( isset( $fields['collapse_order'] ) )
+      unset( $fields['collapse_order'] );
+
+    $fields['container'] = array(
+      'name'    => esc_html__( 'Container Style', 'ctcore' ),
+      'type'    => 'select',
+      'group'   => 'layout',
+      'priority'=> 1,
+      'options' => array(
+        'container' => esc_attr__( 'Default Container', 'ctcore' ),
+        'fluid'     => esc_attr__( 'Fluid Container', 'ctcore' ),
+        'none'      => esc_attr__( 'No Container', 'ctcore' ),
+      )
+    );
+
+    return $fields;
   }
 
 }

@@ -83,11 +83,12 @@ class CT_Core {
 		$this->plugin_name = CT_SLUG;
 		$this->version = CT_VERSION;
 
-    $this->features = get_theme_support( 'ct-core' );
+    $this->features = get_option( 'ctcore_features', array() );
 
 		$this->load_dependencies();
 
 		add_action( 'plugins_loaded', array( $this, 'set_locale' ) );
+		add_action( 'admin_init', array( $this, 'set_features' ) );
 	}
 
 	/**
@@ -125,26 +126,6 @@ class CT_Core {
 	private function load_dependencies() {
 
 		/**
-		 * The class responsible for defining all actions that occur in the admin area.
-		 */
-		require_once CT_INC . 'class-ct-core-integrations.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
-		require_once CT_INC . 'class-ct-core-fronts.php';
-
-    /**
-		 * Helper class method to cleanup and whitelabeling WordPress site
-     * use this with caution, this is the part of one theme fetaures
-     * if cleanup features enabled, you dont need to call this class method anymore!
-     *
-     * USE WITH CAUTION!!! THIS MAY BREAK YOUR WORDPRESS SITE!!!
-		 */
-		require_once CT_INC . 'class-ct-core-cleanup.php';
-
-		/**
 	   * Defining all theme features
 	   * enabled by defaults, except cleanup features.
      *
@@ -152,7 +133,7 @@ class CT_Core {
 	   */
 		$opts_temp = array();
 
-		if ( ! $this->features || empty( $this->features ) ) {
+		if ( empty( $this->features ) ) {
 		  return;
 		}
 
@@ -187,6 +168,35 @@ class CT_Core {
 	 */
 	public function set_locale() {
 		load_plugin_textdomain( 'ctcore', false, CT_PATH . 'languages' );
+	}
+
+	/**
+	 * Update features on current theme.
+	 *
+	 * @since    1.0.0
+	 * @access   public
+	 */
+	public function set_features() {
+
+    $theme_name = get_stylesheet();
+    $theme_features = get_theme_support( 'ctcore' );
+
+    if ( !$theme_name || !is_array( $theme_features ) ) {
+      return;
+    }
+
+    if ( isset( $_GET['ctcore'] ) && $_GET['ctcore'] == 'updated' ) {
+      add_admin_notice( 'success', esc_html__( 'Child Themes Core feature for this theme has been updated', 'ctcore' ) );
+    }
+
+    $theme_features = $theme_features[0];
+    $old_option_value = get_option( 'ctcore_features', array() );
+
+    if ( !is_array_equal( $theme_features, $old_option_value ) ) {
+      update_option( 'ctcore_features', $theme_features );
+      wp_safe_redirect( add_query_arg( 'ctcore', 'updated', $_SERVER['HTTP_REFERER'] ) );
+      exit();
+    }
 	}
 
   /**

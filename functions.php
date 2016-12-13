@@ -17,7 +17,7 @@
   * The code that runs during plugin activation.
   */
  function activate_mtcore() {
-	 require CT_INC.'class-mtcore-install.php';
+	 require CT_INC.'class-ct-core-install.php';
 	 new CT_Core_Install( 'activate' );
  }
 
@@ -25,9 +25,24 @@
  * The code that runs during plugin deactivation.
  */
 function deactivate_mtcore() {
-	require CT_INC.'class-mtcore-install.php';
+	require CT_INC.'class-ct-core-install.php';
 	new CT_Core_Install( 'deactivate' );
 }
+
+/**
+ * Add action links to the plugin list for Page Builder.
+ *
+ * @since 	1.0.0
+ * @param   $links
+ * @return  array
+ */
+function ct_core_plugin_action_links($links) {
+	unset( $links['edit'] );
+	$links[] = '<a href="http://childthemes.net/" target="_blank">' . __('Get Themes', 'ctcore') . '</a>';
+	$links[] = '<a href="http://childthemes.net/support" target="_blank">' . __('Support', 'ctcore') . '</a>';
+	return $links;
+}
+add_action( 'plugin_action_links_'.CT_CORE, 'ct_core_plugin_action_links' );
 
 /**
  * Cleanup shortcode javascript generated when switching theme.
@@ -38,6 +53,30 @@ function ctcore_remove_theme_cache() {
 	deactivate_mtcore();
 }
 add_action( 'switch_theme', 'ctcore_remove_theme_cache' );
+
+
+/**
+ * Get all sub-directory in a directory.
+ *
+ * @since 	1.0.0
+ * @param   $dir   string   dir path
+ * @return  mixed
+ */
+if ( ! function_exists( 'get_sub_dirs' ) ) :
+function get_sub_dirs( $path ) {
+	$dirs = array();
+  if ( empty($path) || !is_dir($path) ) return $dirs;
+  $path = trailingslashit( $path );
+  $dir  = new DirectoryIterator( $path );
+  foreach ( $dir as $file ) {
+    if ( $file->isDir() && !$file->isDot() ) {
+      if ( is_dir( $path.'/'.$file->getFilename() ) )
+        $dirs[] = $file->getFilename();
+    }
+  }
+  return $dirs;
+}
+endif;
 
 /**
  * Convert string file name to class name.
@@ -62,11 +101,11 @@ function file_to_classname( $file, $prefix = '', $suffix = '' ) {
  	$class_name = implode('_', $class_name);
 
  	if ( ! empty( $prefix ) ) {
- 		$class_name = sanitize_title($prefix).'_'.$class_name;
+ 		$class_name = esc_attr($prefix).'_'.$class_name;
  	}
 
  	if ( ! empty( $suffix ) ) {
- 		$class_name = $class_name.'_'.sanitize_title($suffix);
+ 		$class_name = $class_name.'_'.esc_attr($suffix);
  	}
 
  	return $class_name;
@@ -80,7 +119,7 @@ endif;
  * @return 	string
  */
 if ( !function_exists( 'add_admin_notice' ) ) :
-function add_admin_notice( $status, $cause, $args ) {
+function add_admin_notice( $status, $cause, $args = array() ) {
 	include_once CT_INC . 'class-ct-core-notice.php';
 	new CT_Core_Notice( $status, $cause, $args );
 }
@@ -168,7 +207,7 @@ function ctcore_lorem() {
 	 * Compatible with PHP 5.3+
 	 */
 	require_once CT_INC . 'class-ct-core-loremipsum.php';
-	return new CT_Core_Lorem();
+	return new CT_Core_Loremipsum();
 }
 
 /**
@@ -223,5 +262,45 @@ function get_domain_name( $url ) {
     return $regs['domain'];
   }
   return false;
+}
+endif;
+
+/**
+ * Check if array is diffrence by value only.
+ *
+ * @since  1.0.0
+ */
+if ( ! function_exists( 'is_array_equal' ) ) :
+function is_array_equal($a, $b) {
+  return (
+   is_array($a) && is_array($b) &&
+   count($a) == count($b) &&
+   array_diff($a, $b) === array_diff($b, $a)
+  );
+}
+endif;
+
+/**
+ * Check if plugin is active by plugin slug.
+ *
+ * @since  1.0.0
+ */
+if ( ! function_exists( 'is_plugin_active_by_slug' ) ) :
+function is_plugin_active_by_slug( $plugin ) {
+
+  if ( empty( $plugin ) ) {
+    return false;
+  }
+
+  $plugin = $plugin.'/'.$plugin.'.php';
+
+  $network_active = false;
+	if ( is_multisite() ) {
+		$plugins = get_site_option( 'active_sitewide_plugins', array() );
+		if ( isset( $plugins[ $plugin ] ) ) {
+			$network_active = true;
+		}
+	}
+	return in_array( $plugin, get_option( 'active_plugins', array() ) ) || $network_active;
 }
 endif;

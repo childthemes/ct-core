@@ -76,7 +76,7 @@ class CT_Core_Shortcodes {
 	public function __construct() {
 
     $this->version = CT_VERSION;
-		if ( false !== ( $opts = get_theme_support( 'ctcore' ) ) && in_array( 'shortcode', $opts ) ) {
+		if ( false !== ( $opts = get_option( 'ctcore_features' ) ) && in_array( 'shortcodes', $opts ) ) {
 	    $this->active = true;
 			add_action( 'after_setup_theme', array( $this, 'register_shortcodes' ), 15 );
 			add_action( 'admin_head', array( $this, 'register_mce_button' ), 1 );
@@ -157,7 +157,7 @@ class CT_Core_Shortcodes {
 				$mce .= 't.target.val=t.target.value():t.target.val+=","+t.target.value(),t.target.value(t.target.val)};';
         $mce .= 'editor.addButton( "ctcore", {';
         $mce .= 'type: "menubutton",';
-        $mce .= 'image: "'.CT_ASSETS.'img/shortcode-icon.png",';
+        $mce .= 'image: "'.CT_ASSETS.'js/shortcode-icon.png",';
         $mce .= 'tooltip: "Shortcodes",';
         $mce .= 'menu: [';
         foreach ($menus as $menu) {
@@ -341,12 +341,12 @@ class CT_Core_Shortcodes {
 		/**
 		 * Change theme relative path with this filter
 		 */
-		$rel_path = apply_filters( 'ctcore_features_shortcode_path', $this->rel_path, self::$instance );
+		$rel_path = apply_filters( 'ctcore_shortcode_path', $this->rel_path, self::$instance );
 
 		/**
 		 * Modify default main menu dropdown for shortcode
 		 */
-		$this->menus = apply_filters( 'ctcore_features_shortcode_menu',
+		$this->menus = apply_filters( 'ctcore_shortcode_menu',
 		array(
 			'content' => array(
 				'text' => esc_attr__( 'Content', 'ctcore' ),
@@ -391,10 +391,10 @@ class CT_Core_Shortcodes {
 		 * Theme override before plugin shortcde
 		 * You can replace our predefined shortcode
 		 * or remove all with:
-		 * add_filter( 'ctcore_features_shortcode_directory', '__return_empty_array' );
+		 * add_filter( 'ctcore_shortcode_directory', '__return_empty_array' );
 		 *
 		 */
-		$dirs = apply_filters( 'ctcore_features_shortcode_directory',
+		$dirs = apply_filters( 'ctcore_shortcode_directory',
 			array( 'ctcore' => CT_INC . 'shortcodes' ),
 			$this->shortcodes
 		);
@@ -442,7 +442,7 @@ class CT_Core_Shortcodes {
 							if ( is_file( $options_file ) && file_exists( $options_file ) ) {
 								$sc_data['fields'] = include_once( $options_file );
 							}
-							$sc_data = apply_filters( 'ctcore_features_shortcode_data', $sc_data, $sc_base );
+							$sc_data = apply_filters( 'ctcore_shortcode_data', $sc_data, $sc_base );
 							if ( isset( $sc_data['fields'] ) && is_array( $sc_data['fields'] ) ) {
 								$sc_data['fields'] = $this->set_fields( $sc_data );
 							}

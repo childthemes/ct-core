@@ -13,7 +13,7 @@
  * @link      https://github.com/joshtronic/php-loremipsum
  */
 
-class CT_Core_Lorem {
+class CT_Core_Loremipsum {
 
   /**
    * First

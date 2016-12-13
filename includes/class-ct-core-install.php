@@ -75,6 +75,8 @@ class CT_Core_Install {
 		$this->delete_transient();
 		// set globals value
 		$GLOBALS['CT_Core'] = null;
+    // add default features to option
+		add_option( 'ctcore_features', array() );
 		// flush option cache
 		wp_cache_delete( 'alloptions', 'options' );
 		// flush rewrite rules always
@@ -94,6 +96,8 @@ class CT_Core_Install {
 		$this->delete_transient();
 		// remove globals value
 		unset( $GLOBALS['CT_Core'] );
+    // delete features option
+		delete_option( 'mtcore_features' );
 		// flush option cache
 		wp_cache_delete( 'alloptions', 'options' );
 		// flush rewrite rules always

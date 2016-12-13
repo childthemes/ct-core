@@ -983,7 +983,12 @@ module.exports = panels.view.dialog.extend( {
 
 		// Represent the cells
 		_.each( this.row.cells, function ( cell, i ) {
-			var newCell = $( this.cellPreviewTemplate( {weight: cell} ) );
+
+      var colText = cell Math.round( ( cell * 100 ) * 12 ) / 100;
+			var newCell = $( this.cellPreviewTemplate( {
+        weight: cell * 100,
+        weightname: colText > 1 ? colText+' Columns' : colText+' Column'
+      } ) );
 			rowPreview.append( newCell );
 
       thisDialog.scaleRowWidths();

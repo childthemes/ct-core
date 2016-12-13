@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       ChildThemes Core
+ * Plugin Name:       Child Themes Core
  * Plugin URI:        http://childthemes.net/plugin/childthemes-core
  * Description:       Core functionality post meta, taxonomy meta, theme options, page builder for all themes developed by ChildThemes.
  * Version:           1.0.0

@@ -55,7 +55,7 @@ class CT_Core_Cleanup {
 	public function __construct() {
 
     $this->version = CT_VERSION;
-		if ( false !== ( $opts = get_theme_support( 'ctcore' ) ) && in_array( 'cleanup', $opts ) ) {
+		if ( false !== ( $opts = get_option( 'ctcore_features' ) ) && in_array( 'cleanup', $opts ) ) {
 	    $this->active = true;
       add_action( 'init', array( 'CT_Core_Clean', 'wp_head' ) );
 			add_action( 'init', array( 'CT_Core_Clean', 'generator' ) );

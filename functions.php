@@ -49,7 +49,7 @@ add_action( 'plugin_action_links_'.CT_CORE, 'ct_core_plugin_action_links' );
  * @since 	1.0.0
  */
 function ctcore_remove_theme_cache() {
-	deactivate_mtcore();
+	deactivate_ctcore();
 }
 add_action( 'switch_theme', 'ctcore_remove_theme_cache' );
 

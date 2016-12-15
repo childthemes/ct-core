@@ -32,7 +32,7 @@
 #option-tree-header-wrap,
 #option-tree-settings-api {
   font-family: "Montserrat", sans-serif;
-  color: #010101;
+  color: #384452;
 }
 
 .ot-metabox-wrapper {
@@ -43,6 +43,10 @@
   min-width: 980px;
 }
 
+body.optiontree_page_ot-documentation #option-tree-header,
+body.toplevel_page_ot-settings #option-tree-header {
+  height: 120px;
+}
 
 /*
  * Option Tree Header
@@ -55,7 +59,7 @@
   overflow: initial;
   box-shadow: none;
   border-radius: 0;
-  background: #010101 !important;
+  background: #384452 !important;
   color: #fff !important;
 }
 
@@ -92,7 +96,7 @@
   padding: 0 8px 6px 0;
   box-shadow: none;
   border: none;
-  background: #010101;
+  background: #384452;
 }
 
 
@@ -129,7 +133,9 @@
   color: inherit;
 }
 
-.wrap.settings-wrap .ui-tabs-nav li a .fa {
+.wrap.settings-wrap .ui-tabs-nav li a .icon {
+  font-size: 18px;
+  line-height: 12px;
   margin-right: 10px;
 }
 
@@ -142,11 +148,11 @@
 }
 
 .wrap.settings-wrap .ui-tabs-nav li.ui-state-focus a {
-  background-color: #010101;
+  background-color: #384452;
 }
 
 .wrap.settings-wrap .ui-tabs-nav li.ui-state-active a {
-  background-color: #333;
+  background-color: #1AAAD2;
   color: #fff;
 }
 
@@ -165,12 +171,6 @@
   float: none;
 }
 
-@media only screen and (min-width: 1200px) {
-  .format-settings {
-    width: 50%;
-  }
-}
-
 .format-setting-wrap,
 .option-tree-sortable .format-settings {
   padding: 0;
@@ -182,7 +182,7 @@
 }
 
 .format-settings .format-setting-wrap {
-  padding-left: 75px;
+  padding-left: 45px;
 }
 
 .ot-metabox-wrapper .format-setting-wrap {
@@ -211,15 +211,14 @@
   padding: 0;
   font-size: 16px;
   font-weight: bold;
-  color: #010101;
+  color: #384452;
 }
 
 .format-settings .format-setting-wrap .description h3,
 .format-settings .format-setting-label .label {
-  color: #333 !important;
+  color: #384452 !important;
   font-size: 14px !important;
 }
-
 
 /* --------------------------------------------------
   :: Format Setting
@@ -227,12 +226,7 @@
 
 .format-setting.has-desc,
 .format-setting.wide-desc {
-  margin-top: -15px;
-}
-
-.format-setting.has-desc,
-.format-setting.wide-desc {
-  margin: 0;
+  margin: -15px 0 0;
 }
 
 .format-setting .description {
@@ -243,6 +237,11 @@
   background-color: rgba(250, 250, 250, 1);
   font-size: 12px;
   color: #909090;
+}
+
+.format-setting.has-desc .description,
+.format-setting.wide-desc .description {
+  padding-top: 15px;
 }
 
 .list-item-description {
@@ -256,6 +255,12 @@
   padding: 0;
 }
 
+.format-setting:after,
+.format-setting .description:after {
+  content: "";
+  display: table;
+  clear: both;
+}
 
 /* --------------------------------------------------
   :: OptionTree Wrappers
@@ -274,7 +279,7 @@
   margin: 0;
   padding: 0;
   border: none;
-  box-shadow: inset 220px 0 0 #010101;
+  box-shadow: inset 220px 0 0 #384452;
   border-radius: 0;
   background: #fff;
 }
@@ -354,13 +359,13 @@
   outline: 0;
   text-decoration: none;
   font-weight: bold;
-  color: #010101;
+  color: #384452;
 }
 
 .ot-theme-option-tabs.ui-tabs .ot-theme-option-nav.ui-tabs-nav li a:hover,
 #side-sortables .ot-metabox-tabs.ui-tabs .ot-metabox-nav.ui-tabs-nav li a:hover {
   outline: none;
-  color: #010101;
+  color: #384452;
 }
 
 .ot-theme-option-tabs.ui-tabs .ot-theme-option-nav.ui-tabs-nav li.ui-state-focus a,
@@ -413,7 +418,7 @@
 .type-radio-image .option-tree-ui-radio-images img.option-tree-ui-radio-image-selected,
 .type-radio-image .option-tree-ui-radio-images img:hover {
   box-shadow: none;
-  border-color: #010101;
+  border-color: #384452;
 }
 
 
@@ -468,8 +473,11 @@
   height: 35px !important;
   line-height: 35px !important;
   text-align: center;
+  padding-left: 15px !important;
+  padding-right: 15px !important;
+  font-weight: 700;
   text-transform: uppercase;
-  background-color: #0cb07d;
+  background-color: #1AAAD2;
   border: none;
   border-radius: 0;
   box-shadow: none;
@@ -483,17 +491,26 @@
 .option-tree-ui-button.button:hover,
 .option-tree-ui-button.button:focus {
   outline: 0;
-  background-color: #39BE95;
+  background-color: #F99D1C;
   box-shadow: none;
 }
 
 .option-tree-ui-button.button-secondary {
-  background-color: #BFBFBF;
+  background-color: #384452;
 }
 
 .option-tree-ui-button.button-secondary:hover,
 .option-tree-ui-button.button-secondary:focus {
+  background-color: #444;
+}
+
+.option-tree-ui-button.button-secondary.reset-settings {
   background-color: #999;
+}
+
+.option-tree-ui-button.button-secondary.reset-settings:hover,
+.option-tree-ui-button.button-secondary.reset-settings:focus {
+  background-color: #888;
 }
 
 .option-tree-list-item-add.button {
@@ -506,12 +523,16 @@
 
 .option-tree-list-item-add.button:hover,
 .option-tree-list-item-add.button:focus {
-  background-color: #DA0D0D;
+  background-color: #efa237;
 }
 
 button.reset-settings {
   top: -50px;
   left: 5px;
+}
+
+#setting_export_options.format-settings textarea.textarea {
+  background: #fcfcfc;
 }
 
 .option-tree-ui-button.button .icon {
@@ -589,12 +610,12 @@ textarea[class*="textarea-code"] {
   text-transform: uppercase;
   font-size: 12px;
   font-weight: bold;
-  background: #010101 !important;
+  background: #384452 !important;
   color: #fff !important;
 }
 
 .option-tree-setting .open:hover {
-  background: #010101 !important;
+  background: #384452 !important;
   color: #fff !important;
 }
 
@@ -710,7 +731,7 @@ textarea[class*="textarea-code"] {
   float: none;
   margin: 0;
   padding: 18px 0 0;
-  background: #010101;
+  background: #384452;
 }
 
 .ot-metabox-tabs.ui-tabs .ot-metabox-nav.ui-tabs-nav li,
@@ -795,7 +816,7 @@ textarea[class*="textarea-code"] {
   height: 48px;
   font-size: 18px;
   border-radius: 100%;
-  background-color: #010101;
+  background-color: #384452;
   color: #fff;
   border: none !important;
 }

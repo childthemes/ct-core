@@ -218,6 +218,7 @@ class CT_Core {
 	 */
 	public function admin_scripts( $hook ) {
 		wp_enqueue_style( CT_SLUG.'-admin', ctcore_css( 'admin-style' ), array(), CT_VERSION );
+		wp_enqueue_script( CT_SLUG.'-admin', ctcore_js( 'admin-script' ), array( 'jquery' ), CT_VERSION, true );
 	}
 
   /**

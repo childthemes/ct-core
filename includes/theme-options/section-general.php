@@ -1,6 +1,8 @@
 <?php
 /**
  * Name: General
+ * Icon: Home
+ * Sort: 0
  *
  * @link       http://childthemes.net/
  * @author     Rizal Fauzie <fauzie@childthemes.net>

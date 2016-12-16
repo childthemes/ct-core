@@ -447,18 +447,20 @@ class CT_Core_Theme_Options {
       return $new;
     }
 
-    if ( isset( $new['export_options'] ) )
+    if ( isset( $new['export_options'] ) ) {
       unset( $new['export_options'] );
+    }
 
     if ( isset( $new['import_options'] ) ) {
       if ( !empty( $new['import_options'] ) ) {
         $new_data = unserialize( ot_decode( $new['import_options'] ) );
-        $new = ( !empty($new_data) && is_array($new_data) ) ? $new_data : $new;
-        add_settings_error( 'option-tree', 'import_success', esc_html__( 'Import Options Data Success.', 'ctcore' ), 'updated' );
+        if ( !empty( $new_data ) && is_array( $new_data ) ) {
+          $new = $new_data;
+          add_settings_error( 'option-tree', 'import_success', esc_html__( 'Import Options Data Success.', 'ctcore' ), 'updated' );
+        }
       }
       unset( $new['import_options'] );
     }
-
 		return $new;
 	}
 

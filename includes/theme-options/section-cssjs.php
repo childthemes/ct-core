@@ -1,7 +1,7 @@
 <?php
 /**
- * Name: Custom CSS & JS
- * Icon: File Code Outline
+ * Name: Custom CSS
+ * Icon: Code
  * Sort: 98
  *
  * @link       http://childthemes.net/
@@ -15,7 +15,7 @@ return array(
     'id'          => 'custom_dynamic_css',
     'label'       => esc_html__( 'Custom CSS', 'ctcore' ),
     'desc'        => esc_html__( 'Add your custom modifier stylesheet here.', 'ctcore' ),
-    'std'         => "body.childthemes {\n\twidth: 100%;\n}",
+    'std'         => "body.childthemes {\n\tborder: none;\n}",
     'type'        => 'css'
   ),
   array(

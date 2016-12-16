@@ -138,6 +138,11 @@ class CT_Core_Install {
 		$upload_dir = wp_upload_dir();
 		$upload_path = trailingslashit( $upload_dir['basedir'] );
 		if ( !$upload_dir['error'] && is_dir( $upload_path.'ct-core' ) ) {
+      $files = glob( $upload_path.'ct-core/*' );
+      foreach ( $files as $file ) {
+        if ( is_file( $file ) )
+          unlink( $file ); // delete file
+      }
 			$sc_temp = file_get_contents( CT_PATH.'assets/js/shortcodes.js' );
 			file_put_contents( $upload_path.'ct-core/shortcodes.js', $sc_temp );
 			return true;

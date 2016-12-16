@@ -93,6 +93,8 @@ class CT_Core_Theme_Options {
 			add_action( 'plugins_loaded', array( $this, 'include_ot_loader' ), 20 );
 			add_action( 'after_setup_theme', array( $this, 'register_theme_options' ), 16 );
 			add_action( 'ot_admin_styles_after', array( $this, 'admin_scripts' ) );
+			add_filter( 'css_option_file_path', array( $this, 'set_dynamic_css_path' ), 20, 2 );
+      add_action( 'wp_print_footer_scripts', array( $this, 'dynamic_scripts' ), 99 );
 
       add_filter( 'option_'.$this->option_id, array( $this, 'get_exclude_tools' ), 20 );
       add_filter( 'pre_update_option_'.$this->option_id, array( $this, 'pre_exclude_tools' ), 20 );
@@ -105,10 +107,11 @@ class CT_Core_Theme_Options {
 	 * @since     1.0.0
 	 */
 	public function include_ot_loader() {
-		if ( ! class_exists( 'OT_Loader' ) ) {
-			require CT_INC . 'option-tree/ot-loader.php';
-		}
-		add_filter( 'ot_show_new_layout', '__return_false' );
+
+    if ( ! class_exists( 'OT_Loader' ) ) {
+      require CT_INC . 'option-tree/ot-loader.php';
+    }
+
 		add_filter( 'ot_show_new_layout', '__return_false' );
     add_filter( 'ot_show_options_ui', '__return_false' );
     if ( !( defined( 'WP_DEBUG' ) && WP_DEBUG == true ) ) {
@@ -128,12 +131,7 @@ class CT_Core_Theme_Options {
 
 		$this->theme = wp_get_theme();
 
-		/* OptionTree is not loaded yet, or this is not an admin request */
-		if ( ! function_exists( 'ot_settings_id' ) || ! is_admin() ) {
-			return;
-		}
-
-		/* Customize Option Tree Defaults Option ID */
+    /* Customize Option Tree Defaults Option ID */
     add_filter( 'ot_theme_mode',        '__return_true' );
     add_filter( 'ot_use_theme_options', '__return_true' );
     add_filter( 'ot_post_formats',      '__return_true' );
@@ -146,6 +144,11 @@ class CT_Core_Theme_Options {
 		add_filter( 'ot_theme_options_menu_slug', array( $this, 'set_menu_slug' ) );
 		add_filter( 'ot_theme_options_position', array( $this, 'set_menu_position' ) );
 		add_filter( 'ot_dequeue_jquery_ui_css_screen_ids', array( $this, 'screen_ids' ) );
+
+		/* OptionTree is not loaded yet, or this is not an admin request */
+		if ( ! function_exists( 'ot_settings_id' ) || ! is_admin() ) {
+			return;
+		}
 
 		$path = apply_filters( 'childthemes_theme_options_path', $this->path, self::$instance );
 
@@ -387,6 +390,50 @@ class CT_Core_Theme_Options {
 	public function admin_scripts( $hook ) {
 		wp_enqueue_style( 'ctcore-ot-style', CT_ASSETS . 'css/admin-options.css', array(), CT_VERSION );
 		wp_enqueue_style( 'ctcore-ot-icons', CT_ASSETS . 'css/admin-widget-icon.css', array(), CT_VERSION );
+	}
+
+	/**
+	 * Enqueue dynamic scripts from theme options.
+	 *
+	 * @since     1.0.0
+	 */
+	public function dynamic_scripts() {
+
+    $options = get_option( ot_options_id(), array() );
+    $scripts = isset($options['custom_dynamic_js']) ? $options['custom_dynamic_js'] : '';
+
+    $js = '';
+    if ( !empty( $scripts ) ) {
+      $js .= '<script id="dynamic-js-theme-options" type="text/javascript">';
+      $js .= "\n/* <![CDATA[ */\n";
+      $js .= "jQuery(document).ready( function($) {\n";
+      $js .= "\t" . $scripts;
+      $js .= "\n});";
+      $js .= "\n/* ]]> */\n";
+      $js .= '</script>';
+    }
+    echo $js;
+	}
+
+	/**
+	 * Set default dynamic css file path.
+	 *
+	 * @since     1.0.0
+	 */
+	public function set_dynamic_css_path( $path, $file_id ) {
+
+    $css_dir = wp_upload_dir();
+    $opt_id  = str_replace( 'ctcore_', '', $this->option_id );
+		$css_path = trailingslashit( $css_dir['basedir'] );
+
+		if ( !$css_dir['error'] && !empty($opt_id) ) {
+      $path = $css_path.'dynamic-'.sanitize_key($opt_id).'.css';
+			if ( wp_mkdir_p( $css_path.'ct-core' ) ) {
+        file_put_contents( $css_path.'ct-core/dynamic-'.sanitize_key($opt_id).'.css', '' );
+        $path = $css_path.'ct-core/dynamic-'.sanitize_key($opt_id).'.css';
+      }
+    }
+    return $path;
 	}
 
 	/**

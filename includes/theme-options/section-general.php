@@ -13,13 +13,13 @@ return array(
 
   array(
     'id'          => 'body_typography',
-    'label'       => esc_html__( 'Body Typography', 'humansave' ),
+    'label'       => esc_html__( 'Body Typography', 'ctcore' ),
     'std'         => '',
     'type'        => 'typography'
   ),
   array(
     'id'          => 'head_typography',
-    'label'       => esc_html__( 'Heading Typography', 'humansave' ),
+    'label'       => esc_html__( 'Heading Typography', 'ctcore' ),
     'std'         => '',
     'type'        => 'typography'
   )

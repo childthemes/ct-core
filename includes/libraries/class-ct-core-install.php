@@ -77,6 +77,7 @@ class CT_Core_Install {
 		$GLOBALS['CT_Core'] = null;
     // add default features to option
 		add_option( 'ctcore_features', array() );
+		add_option( 'ctcore_theme_options_id', '' );
 		// flush option cache
 		wp_cache_delete( 'alloptions', 'options' );
 		// flush rewrite rules always
@@ -97,7 +98,8 @@ class CT_Core_Install {
 		// remove globals value
 		unset( $GLOBALS['CT_Core'] );
     // delete features option
-		delete_option( 'mtcore_features' );
+		delete_option( 'ctcore_features' );
+		delete_option( 'ctcore_theme_options_id' );
 		// flush option cache
 		wp_cache_delete( 'alloptions', 'options' );
 		// flush rewrite rules always
@@ -115,7 +117,7 @@ class CT_Core_Install {
 
 		$upload_dir = wp_upload_dir();
 		$upload_path = trailingslashit( $upload_dir['basedir'] );
-		if ( $upload_dir['error'] || is_dir( $upload_path.'ct-core' ) )
+		if ( $upload_dir['error'] )
 			return false;
 
 		if ( wp_mkdir_p( $upload_path.'ct-core' ) ) {

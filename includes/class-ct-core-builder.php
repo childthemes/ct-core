@@ -1,6 +1,6 @@
 <?php
 /**
- * Integration CT_Core with plugin.
+ * Integration CT_Core with Page Builder plugin.
  *
  * @link     http://childthemes.net/
  * @author   Rizal Fauzie <fauzie@childthemes.net>
@@ -13,7 +13,7 @@
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit;
 
-class CT_Core_Integrations {
+class CT_Core_Builder {
 
   /**
 	 * The version of this plugin.
@@ -41,15 +41,15 @@ class CT_Core_Integrations {
   public $url;
 
   /**
-	 * Hold plugin slug and folder name curernt integration.
+	 * Hold plugin slug and folder name curernt builder integration.
 	 *
 	 * @since    1.0.0
 	 * @access   protected
 	 */
-  protected $integration;
+  protected $builder;
 
   /**
-	 * List of relative files to include with plugin integration.
+	 * List of relative files to include with builder plugin.
 	 *
 	 * @since    1.0.0
 	 * @access   protected
@@ -62,7 +62,7 @@ class CT_Core_Integrations {
 	 * @since    1.0.0
 	 * @access   public
 	 */
-	public static $integrations = array();
+	public static $builders = array();
 
   /**
 	 * Constructor parent.
@@ -72,10 +72,10 @@ class CT_Core_Integrations {
 	public function __construct() {
 
     $this->version = CT_VERSION;
-    $this->path = trailingslashit( CT_INC . 'integrations/' . $this->integration() );
-		$this->url  = trailingslashit( CT_URI . 'includes/integrations/' . $this->integration() );
+    $this->path = trailingslashit( CT_INC . 'builders/' . $this->builder() );
+		$this->url  = trailingslashit( CT_URI . 'includes/builders/' . $this->builder() );
 
-		self::$integrations[ $this->integration() ] = array(
+		self::$builders[ $this->builder() ] = array(
 			'dir' => $this->path,
 			'url' => $this->url
 		);
@@ -85,7 +85,7 @@ class CT_Core_Integrations {
 	}
 
   /**
-	 * Include and run inherit files from current integration.
+	 * Include and run inherit files from current builder.
 	 *
 	 * @since  1.0.0
    * @access private
@@ -101,10 +101,10 @@ class CT_Core_Integrations {
 			}
       include_once( $this->path.$file );
       $base_name = str_replace('class-', '', basename($file,'.php'));
-      $base_name = str_replace($this->integration().'-', '', $base_name);
+      $base_name = str_replace($this->builder().'-', '', $base_name);
       $class_name = file_to_classname( $file, 'CT_Core' );
-      if ( class_exists( $class_name ) && !isset( $GLOBALS['ctcore_integrations'][ $this->integration ][ $base_name ] ) )
-        $GLOBALS['ctcore_integrations'][ $this->integration ][ $base_name ] = new $class_name;
+      if ( class_exists( $class_name ) && !isset( $GLOBALS['ctcore_builders'][ $this->builder ][ $base_name ] ) )
+        $GLOBALS['ctcore_builders'][ $this->builder ][ $base_name ] = new $class_name;
 		}
 	}
 
@@ -116,53 +116,33 @@ class CT_Core_Integrations {
 	 */
 	public static function get_instance() {
 
-    global $ctcore_integrations;
+    global $ctcore_builders;
 
-    $integrations = apply_filters( 'ctcore_integrations_dirs', get_sub_dirs( CT_INC.'integrations' ) );
+    $builders = apply_filters( 'ctcore_builder_dirs', get_sub_dirs( CT_INC.'builders' ) );
 
-    if ( empty( $integrations ) || !is_array( $integrations ) ) {
-      return $ctcore_integrations;
+    if ( empty( $builders ) || !is_array( $builders ) ) {
+      return $ctcore_builders;
     }
 
-    foreach ( $integrations as $id_base ) {
+    foreach ( $builders as $id_base ) {
 
       if ( ! is_plugin_active_by_slug( $id_base ) )
         continue;
 
-      $plugfile = sprintf( '%1$sintegrations/%2$s/class-%2$s.php', CT_INC, $id_base );
+      $plugfile = sprintf( '%1$sbuilders/%2$s/class-%2$s.php', CT_INC, $id_base );
 
-      if ( file_exists( $plugfile ) && !isset($ctcore_integrations[ $id_base ]['instance']) ) {
+      if ( file_exists( $plugfile ) && !isset($ctcore_builders[ $id_base ]['instance']) ) {
         include_once( $plugfile );
         $class_name = file_to_classname( $id_base, 'CT_Core' );
         if ( class_exists( $class_name ) )
-          $ctcore_integrations[ $id_base ]['instance'] = new $class_name;
+          $ctcore_builders[ $id_base ]['instance'] = new $class_name;
       }
     }
-    return $ctcore_integrations;
+    return $ctcore_builders;
 	}
 
   /**
-	 * Locate template path if file exists.
-   *
-   * @since  1.0.0
-   * @access public
-	 */
-	public function locate_template( $template, $template_name, $template_path ) {
-
-    if ( $this->integration !== $template_path )
-      return $template;
-
-		$default_path = trailingslashit( $this->path.'templates' );
-
-		if ( is_dir( $default_path ) && file_exists( $default_path.$template_name ) ) {
-			$template = $default_path.$template_name;
-		}
-
-		return $template;
-	}
-
-  /**
-	 * Function to get css file fron current integration.
+	 * Function to get css file fron current builder integration.
 	 *
 	 * @since  1.0.0
    * @access public
@@ -184,7 +164,7 @@ class CT_Core_Integrations {
   }
 
   /**
-	 * Function to get javascript file fron current integration.
+	 * Function to get javascript file fron current builder integration.
 	 *
 	 * @since  1.0.0
    * @access public
@@ -206,43 +186,43 @@ class CT_Core_Integrations {
   }
 
   /**
-	 * Method to get current integration slug.
+	 * Method to get current builder slug.
 	 *
 	 * @since  1.0.0
    * @access public
 	 */
-	public function integration() {
-		return $this->integration;
+	public function builder() {
+		return $this->builder;
 	}
 
   /**
-	 * Get list of integration
+	 * Get list of builders
 	 *
 	 * @since  1.0.0
    * @access public
 	 */
-	public static function get_integrations() {
-		return self::$integrations;
+	public static function get_builders() {
+		return self::$builders;
 	}
 
   /**
-	 * Method to get current integration directory.
+	 * Method to get current builder directory.
 	 *
 	 * @since  1.0.0
    * @access public
 	 */
 	public static function get_dir( $plug = null ) {
-		return ! empty( $plug ) ? self::$integrations[ $plug ][ 'dir' ] : $this->path;
+		return ! empty( $plug ) ? self::$builders[ $plug ][ 'dir' ] : $this->path;
 	}
 
   /**
-	 * Method to get current integration URL.
+	 * Method to get current builder URL.
 	 *
 	 * @since  1.0.0
    * @access public
 	 */
 	public static function get_url( $plug = null ) {
-		return ! empty( $plug ) ? self::$integrations[ $plug ][ 'url' ] : $this->url;
+		return ! empty( $plug ) ? self::$builders[ $plug ][ 'url' ] : $this->url;
 	}
 
 }

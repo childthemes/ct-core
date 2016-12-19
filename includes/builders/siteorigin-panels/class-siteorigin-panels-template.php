@@ -1,6 +1,8 @@
 <?php
 /**
- * Integration Plugin with Child Themes.
+ * Integration Plugin with Siteorigin Panels Page Builder
+ * 
+ * @wordpress-plugin https://wordpress.org/plugins/siteorigin-panels/  
  *
  * @link       http://childthemes.net/
  * @author     Rizal Fauzie <fauzie@childthemes.net>
@@ -10,7 +12,7 @@
  * @subpackage CT_Core/includes/integrations
  */
 
-class CT_Core_Siteorigin_Panels_Template extends CT_Core_Integrations {
+class CT_Core_Siteorigin_Panels_Template extends CT_Core_Builder {
 
   /**
 	 * Class Constructor.
@@ -18,7 +20,7 @@ class CT_Core_Siteorigin_Panels_Template extends CT_Core_Integrations {
 	 * @since  1.0.0
 	 */
   public function __construct() {
-    $this->integration = 'siteorigin-panels';
+    $this->builder = 'siteorigin-panels';
     parent::__construct();
   }
 

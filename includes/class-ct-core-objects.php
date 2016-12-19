@@ -119,11 +119,15 @@ class CT_Core_Objects {
 	 */
 	public function load_objects( $directory ) {
 
-		$directory = glob( $directory.'/*.php', GLOB_NOSORT );
+		$directory = glob( $directory.'/*.php' );
 
-    if ( !is_array( $directory ) || empty( $directory ) ) {
-      return;
-    }
+		usort( $directory, function($a, $b) {
+			return strlen($b) + strlen($a);
+		});
+
+		if ( !is_array( $directory ) || empty( $directory ) ) {
+			return;
+		}
 
 		foreach ($directory as $key => $file) {
 			// get file slug
@@ -140,17 +144,17 @@ class CT_Core_Objects {
 				}
 			}
 			// register taxonomy
-			elseif ( false !== strpos( $file, 'taxonomy-' ) ) {
+			elseif ( false !== strpos( $name, 'taxonomy-' ) ) {
 				$tax_obj = str_replace( 'taxonomy-', '', $name );
 				$tax_obj = explode( '-', $tax_obj );
 				if ( array_key_exists( $tax_obj[0], $this->objects ) && file_exists( $file ) ) {
-          if ( ! in_array( $tax_obj[1], $this->objects[ $tax_obj[0] ] ) ) {
+					if ( ! in_array( $tax_obj[1], $this->objects[ $tax_obj[0] ] ) ) {
 						$args = include_once( $file );
 						if ( is_array( $args ) && !empty( $args ) ) {
 							$this->objects[ $tax_obj[0] ][] = $tax_obj[1];
 							register_taxonomy( $tax_obj[1], $tax_obj[0], $args );
 						}
-          }
+					}
 				}
 			}
 		}

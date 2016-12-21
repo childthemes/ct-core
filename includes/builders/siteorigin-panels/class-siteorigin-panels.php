@@ -91,7 +91,7 @@ class CT_Core_Siteorigin_Panels extends CT_Core_Builder {
   public function add_admin_script( $prefix = '', $force = false ) {
 
     if ( $force || siteorigin_panels_is_admin_page() ) {
-      wp_enqueue_script( 'so-panels-admin', $this->get_js( 'so-custom' ), array( 'jquery', 'jquery-ui-resizable', 'jquery-ui-sortable', 'jquery-ui-draggable', 'underscore', 'backbone', 'plupload', 'plupload-all' ), null, true );
+      wp_enqueue_script( 'so-panels-admin', $this->url . 'js/so-custom.js', array( 'jquery', 'jquery-ui-resizable', 'jquery-ui-sortable', 'jquery-ui-draggable', 'underscore', 'backbone', 'plupload', 'plupload-all' ), null, true );
       add_action( 'admin_footer', array( $this, 'js_templates' ) );
     }
   }

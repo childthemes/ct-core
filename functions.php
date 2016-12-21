@@ -90,24 +90,29 @@ function file_to_classname( $file, $prefix = '', $suffix = '' ) {
  	$class_name = explode('-', $class_name);
  	$class_name = array_map('ucfirst', $class_name);
 
+  $class = array();
 	foreach ($class_name as $key => $name) {
 		if ( $name == 'Class' ) {
-			unset( $class_name[ $key ] );
-		} elseif ( $name == 'Ct' ) {
-			$class_name[ $key ] = 'CT';
+			continue;
 		}
+    if ( $name == 'Ct' ) {
+			$name = 'CT';
+		}
+    if ( $name == 'Childthemes' ) {
+			$name = 'ChildThemes';
+		}
+    $class[] = $name;
 	}
- 	$class_name = implode('_', $class_name);
-
- 	if ( ! empty( $prefix ) ) {
- 		$class_name = esc_attr(ucfirst($prefix)).'_'.$class_name;
+  
+ 	if ( ! empty( $prefix ) && $class[0] !== $prefix ) {
+    array_unshift( $class, $prefix );
  	}
 
- 	if ( ! empty( $suffix ) ) {
- 		$class_name = $class_name.'_'.esc_attr(ucfirst($suffix));
+ 	if ( ! empty( $suffix ) && $suffix !== end($class) ) {
+    array_push( $class, $suffix );
  	}
-
- 	return $class_name;
+  
+  return implode('_', $class);
 }
 endif;
 

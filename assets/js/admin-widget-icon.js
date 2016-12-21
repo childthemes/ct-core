@@ -4,15 +4,15 @@
 
 	function iToggle( wie_el, thod, val ) {
 		if ( thod == 'show' && val !== null ) {
-			$(wie_el).find('#mt-icon-wrap .mt-icon-select').hide();
-			$(wie_el).find('#mt-icon-wrap .mt-icon-remove').show();
-			$(wie_el).find('#mt-icon-wrap i').attr('class', val+' icon').show();
-			$(wie_el).find('p.mt-iconpicker input[type="hidden"]').val(val).trigger('change');
+			$(wie_el).find('#ct-icon-wrap .ct-icon-select').hide();
+			$(wie_el).find('#ct-icon-wrap .ct-icon-remove').show();
+			$(wie_el).find('#ct-icon-wrap i').attr('class', val+' icon').show();
+			$(wie_el).find('p.ct-iconpicker input[type="hidden"]').val(val).trigger('change');
 		} else {
-			$(wie_el).find('#mt-icon-wrap .mt-icon-select').show();
-			$(wie_el).find('#mt-icon-wrap .mt-icon-remove').hide();
-			$(wie_el).find('#mt-icon-wrap i').attr('class','').hide();
-			$(wie_el).find('p.mt-iconpicker input[type="hidden"]').val('').trigger('change');
+			$(wie_el).find('#ct-icon-wrap .ct-icon-select').show();
+			$(wie_el).find('#ct-icon-wrap .ct-icon-remove').hide();
+			$(wie_el).find('#ct-icon-wrap i').attr('class','').hide();
+			$(wie_el).find('p.ct-iconpicker input[type="hidden"]').val('').trigger('change');
 		}
 	}
 
@@ -36,33 +36,58 @@
 		});
 
 		$(document).on('click', 'button#pick-icon', function(e){
-			if ( ! $(cur_widget).find('p.mt-iconpicker > input[type="hidden"]').val().length ) {
+			if ( ! $(cur_widget).find('p.ct-iconpicker > input[type="hidden"]').val().length ) {
 				iToggle( cur_widget, 'show', $('input[name="iconpicker-search"]').val() );
 			}
 			if ( wp && wp.customize ) {
 				$( '#colorpickerwrap' ).hide();
-			} else {
-				tb_remove();
 			}
 		});
 	}
 
 	function init(widget_el, is_cloned) {
 
-		var _input = $(widget_el).find('p.mt-iconpicker > input[type="hidden"]'),
+		var _input = $(widget_el).find('p.ct-iconpicker > input[type="hidden"]'),
 				_value = _input.val();
 
-		$(widget_el).find('#mt-icon-wrap > .mt-icon-remove').click( function(){
+		$(widget_el).find('#ct-icon-wrap > .ct-icon-remove').click( function(){
 			iToggle( widget_el, 'hide', null );
 		});
 
-		$(widget_el).find('#mt-icon-wrap > .mt-icon-select').click( function(){
+		$(widget_el).find('#ct-icon-wrap > .ct-icon-select').click( function(){
+      
+      on_popup_show( widget_el );
+      
 			if ( wp && wp.customize ) {
 				$( '#colorpickerwrap' ).show();
-			} else {
-				tb_show("Choose Icon", "#TB_inline?height=400&amp;width=600&amp;inlineId=colorpickerwrap");
+        return;
 			}
-			on_popup_show( widget_el );
+      
+      $( '#colorpickerwrap' ).dialog({
+        title: 'Choose an Icon',
+        autoOpen: true,
+        modal: true,
+        height: 400,
+        width: 600,
+        buttons: [
+          {
+            text: "Cancel",
+            click: function () {
+              $(this).dialog( 'close' );
+            }
+          },
+          {
+            text: "Select Icon",
+            class: 'button-primary',
+            click: function () {
+              if ( ! $(widget_el).find('p.ct-iconpicker > input[type="hidden"]').val().length ) {
+                iToggle( widget_el, 'show', $('input[name="iconpicker-search"]').val() );
+              }
+              $(this).dialog( 'close' );
+            }
+          }
+        ]
+      })
 		});
 	}
 
@@ -71,18 +96,22 @@
 	 * @param {jQuery} widget_el
 	 */
 	function on_form_update(e, widget_el) {
-		if ($(widget_el).find('p.mt-iconpicker').length) {
+		if ($(widget_el).find('p.ct-iconpicker').length) {
 			init(widget_el, 'widget-added' === e.type);
 		}
 	}
 
-	$(document).on('widget-updated', on_form_update);
-	$(document).on('widget-added', on_form_update);
-
 	$(document).ready( function (){
-		$('.widget:has(.mt-iconpicker)').each(function (){
+		$('.widget:has(.ct-iconpicker)').each(function (){
 			init($(this));
 		});
-	});
+	})
+  .on( 'panelsopen', function (e){
+    var dialog = e.target;
+    if ( $(dialog).has( '.ct-iconpicker' ) ) {
+      init( $(dialog) );
+    }
+  })
+  .on( 'widget-added widget-updated', on_form_update );
 
 })(jQuery);

@@ -23,14 +23,18 @@
 			init($widget_el, 'widget-added' === e.type);
 		}
 	}
-
-	$(document).on('widget-updated', on_form_update);
-	$(document).on('widget-added', on_form_update);
-
+  
 	$(document).ready( function (){
 		$('.widget:has(.wp-color-picker-widget)').each(function (){
 			init($(this));
 		});
-	});
+	})
+  .on( 'panelsopen', function (e){
+    var dialog = e.target;
+    if ( $(dialog).has( 'input.wp-color-picker-widget' ) ) {
+      init( $(dialog) );
+    }
+  })
+  .on( 'widget-added widget-updated', on_form_update );
 
 })(jQuery);

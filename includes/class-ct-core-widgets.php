@@ -171,8 +171,10 @@ class CT_Core_Widgets {
    */
 	public function iconpicker_content() {
     $screen = get_current_screen();
-    if ( in_array( $screen->id, array( 'widgets', 'customize' ) ) )
-		  include_once CT_INC . 'libraries/ctcore-admin-icon.php';
+    if ( in_array( $screen->id, array( 'post', 'page', 'widgets', 'customize' ) ) ) {
+      include_once CT_INC . 'libraries/ctcore-fontawesome.php';
+      include_once CT_INC . 'libraries/ctcore-admin-icon.php';
+    }
 	}
 
 	/**
@@ -310,6 +312,8 @@ class CT_Widget extends WP_Widget {
 	public $widget_id;
 	public $widget_name;
   public $widget_class;
+  public $panels_groups;
+  public $panels_icon;
 	public $settings;
 	public $control_args;
 	public $customizer_support = true;
@@ -327,6 +331,14 @@ class CT_Widget extends WP_Widget {
 			'customizer_support' => $this->customizer_support,
 			'customize_selective_refresh' => $this->customize_selective_refresh
 		);
+    
+    if ( !empty( $this->panels_groups ) ) {
+      $widget_args['panels_groups'] = !is_array( $this->panels_groups ) ? array( esc_attr( $this->panels_groups ) ) : esc_attr( $this->panels_groups );
+    }
+    
+    if ( !empty( $this->panels_icon ) ) {
+      $widget_args['panels_icon'] = esc_attr( $this->panels_icon );
+    }
 
 		// Enqueue style if widget is active (appears in a sidebar) or if in Customizer preview.
 		if ( is_active_widget( false, false, $this->widget_id ) || is_customize_preview() ) {
@@ -413,7 +425,7 @@ class CT_Widget extends WP_Widget {
 					$instance[ $key ] = absint( $new_instance[ $key ] );
 				break;
 				case 'colorpicker' :
-					$instance[ $key ] = esc_color_hex( $new_instance[ $key ] );
+					$instance[ $key ] = esc_color( $new_instance[ $key ] );
 				break;
 				case 'iconpicker' :
 					$instance[ $key ] = esc_attr( $new_instance[ $key ] );
@@ -619,28 +631,29 @@ class CT_Widget extends WP_Widget {
 					<?php
 				break;
 				case 'iconpicker' :
-					add_thickbox();
+					//add_thickbox();
+          //wp_enqueue_style( 'wp-jquery-ui-dialog' );
 					wp_enqueue_style(
-						CT_SLUG.'-widget-icon',
-						ctcore_css( 'admin-widget-icon' ),
-						array(),
+						'font-awesome.min.css',
+						ctcore_css( 'font-awesome' ),
+						array( 'wp-jquery-ui-dialog' ),
 						CT_VERSION
 					);
 					wp_enqueue_script(
 						CT_SLUG.'-widget-icon',
 						ctcore_js( 'admin-widget-icon' ),
-						array( 'jquery' ),
+						array( 'jquery', 'jquery-ui-dialog' ),
 						CT_VERSION,
 						true
 					);
 					?>
-						<p class="mt-iconpicker">
+						<p class="ct-iconpicker">
 							<label for="<?php echo $field_id; ?>"><?php echo $setting[ 'label' ]; ?> </label>
 							<input type="hidden"<?php $this->set_attr( $atts ); ?> />
-							<span id="mt-icon-wrap" class="mt-icon-wrap">
+							<span id="ct-icon-wrap" class="ct-icon-wrap">
 								<i class="<?php echo $value; ?> icon"<?php echo !empty($value)?'':' style="display:none;"'; ?>></i>
-								<button type="button" class="mt-icon-remove button button-small default"<?php echo !empty($value)?'':' style="display:none;"'; ?>>X</button>
-								<button type="button" class="mt-icon-select button button-small default"<?php echo !empty($value)?' style="display:none;"':''; ?>><?php esc_attr_e('Select Icon','ctcore'); ?></button>
+								<button type="button" class="ct-icon-remove button button-small default"<?php echo !empty($value)?'':' style="display:none;"'; ?>>X</button>
+								<button type="button" class="ct-icon-select button button-small default"<?php echo !empty($value)?' style="display:none;"':''; ?>><?php esc_attr_e('Select Icon','ctcore'); ?></button>
 							</span>
 						</p>
 					<?php

@@ -990,8 +990,8 @@ module.exports = panels.view.dialog.extend( {
         weightname: cellTxt > 1 ? cellTxt+' Columns' : cellTxt+' Column'
       }) );
 			rowPreview.append( newCell );
-
-      thisDialog.scaleRowWidths();
+      
+      //thisDialog.scaleRowWidths();
 
 			var prevCell = newCell.prev();
 			var handle;
@@ -1115,7 +1115,8 @@ module.exports = panels.view.dialog.extend( {
 	 * Get the weights from the
 	 */
 	setCellsFromForm: function () {
-
+    var thisDialog = this;
+    
 		try {
 			var f = {
 				'cells': parseInt( this.$( '.row-set-form input[name="cells"]' ).val() ),
@@ -1142,13 +1143,20 @@ module.exports = panels.view.dialog.extend( {
 			var cellCountChanged = (
 				this.row.cells.length !== f.cells
 			);
-
+      
+      // Now, lets create some cells
+			var currentWeight = 1;
+			for ( var i = 0; i < f.cells; i ++ ) {
+				cells.push( currentWeight );
+			}
+      
 			// Now lets make sure that the row weights add up to 1
 			var totalRowWeight = _.reduce( cells, function ( memo, weight ) {
 				return memo + weight;
 			} );
 			cells = _.map( cells, function ( cell ) {
-				return cell / totalRowWeight;
+        var realWeight = thisDialog.getClosestWidth( cell / totalRowWeight );
+        return realWeight / 100;
 			} );
 
 			// Don't return cells that are too small
@@ -1159,9 +1167,9 @@ module.exports = panels.view.dialog.extend( {
 			if ( f.direction === 'left' ) {
 				cells = cells.reverse();
 			}
-
+      
 			this.row.cells = cells;
-
+      
 			if ( cellCountChanged ) {
 				this.regenerateRowPreview();
 			} else {

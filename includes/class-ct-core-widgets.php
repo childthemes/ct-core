@@ -460,7 +460,7 @@ class CT_Widget extends WP_Widget {
 			$atts = array();
 			$field_id = esc_attr( $this->get_field_id( $key ) );
 			$field_name = esc_attr( $this->get_field_name( $key ) );
-			$value = isset( $instance[ $key ] ) ? $instance[ $key ] : $setting[ 'std' ];
+			$value = isset( $instance[ $key ] ) ? $instance[ $key ] : ( isset($setting[ 'std' ]) ? $setting[ 'std' ] : '' );
 
 			$atts[ 'id' ] 		= $field_id;
 			$atts[ 'name' ] 	= $field_name;

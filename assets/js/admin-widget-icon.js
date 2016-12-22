@@ -22,14 +22,14 @@
 			var selected_value = $(this).find('i').attr('class').replace(' icon','');
 			$('#iconlist .column').removeClass( 'selected' );
 			$(this).addClass( 'selected' );
-			$('input[name="iconpicker-search"]').val(selected_value);
+			$('input[name="iconpicker-value"]').val(selected_value);
 		});
 
 		$(document).on('change', '#iconpicker-category', function(){
 			var curval = $(this).val();
 			$('#iconlist .icon-cat-wrap').hide();
 			if ( curval.length ) {
-				$('#iconlist').find('.'+curval).show();
+				$('#iconlist').find('.'+curval+'-group').show();
 			} else {
 				$('#iconlist .icon-cat-wrap').show();
 			}
@@ -37,12 +37,23 @@
 
 		$(document).on('click', 'button#pick-icon', function(e){
 			if ( ! $(cur_widget).find('p.ct-iconpicker > input[type="hidden"]').val().length ) {
-				iToggle( cur_widget, 'show', $('input[name="iconpicker-search"]').val() );
+				iToggle( cur_widget, 'show', $('input#iconpicker-value').val() );
 			}
 			if ( wp && wp.customize ) {
 				$( '#colorpickerwrap' ).hide();
 			}
 		});
+    
+    $(document).on( 'keyup', '#iconpicker-search', function(){
+      var filter = $(this).val(), count = 0;
+      $( '#iconlist .column > span' ).each( function (){
+        if ( $(this).text().search(new RegExp(filter, "i")) < 0 ) {
+          $(this).parent().hide();
+        } else {
+          $(this).parent().show();
+        }
+      });
+    });
 	}
 
 	function init(widget_el, is_cloned) {
@@ -56,9 +67,8 @@
 
 		$(widget_el).find('#ct-icon-wrap > .ct-icon-select').click( function(){
       
-      on_popup_show( widget_el );
-      
 			if ( wp && wp.customize ) {
+        on_popup_show( widget_el );
 				$( '#colorpickerwrap' ).show();
         return;
 			}
@@ -69,6 +79,9 @@
         modal: true,
         height: 400,
         width: 600,
+        open: function (e) {
+          on_popup_show( widget_el );
+        },
         buttons: [
           {
             text: "Cancel",
@@ -81,7 +94,7 @@
             class: 'button-primary',
             click: function () {
               if ( ! $(widget_el).find('p.ct-iconpicker > input[type="hidden"]').val().length ) {
-                iToggle( widget_el, 'show', $('input[name="iconpicker-search"]').val() );
+                iToggle( widget_el, 'show', $('input#iconpicker-value').val() );
               }
               $(this).dialog( 'close' );
             }

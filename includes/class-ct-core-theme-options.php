@@ -389,7 +389,6 @@ class CT_Core_Theme_Options {
 	 */
 	public function admin_scripts( $hook ) {
 		wp_enqueue_style( 'ctcore-ot-style', CT_ASSETS . 'css/admin-options.css', array(), CT_VERSION );
-		wp_enqueue_style( 'ctcore-ot-icons', CT_ASSETS . 'css/admin-widget-icon.css', array(), CT_VERSION );
 	}
 
 	/**

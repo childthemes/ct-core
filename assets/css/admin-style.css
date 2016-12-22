@@ -85,8 +85,8 @@ body.wp-customizer #colorpickerwrap {
 	border-bottom: 1px solid #eee;
 	position: absolute;
 	top: 0;
-	left: -15px;
-	right: -15px;
+	left: -10px;
+	right: -10px;
 	width: auto;
 	z-index: 2;
 }
@@ -123,7 +123,7 @@ body.wp-customizer .colorpickerwrap > footer {
 	position: absolute;
 	display: block;
 	width: auto;
-	height: 310px;
+	height: 260px;
 	margin: 0;
 	top: 45px;
 	left: -10px;
@@ -141,7 +141,7 @@ body.wp-customizer .colorpickerwrap > footer {
 	color: #888;
 	cursor: pointer;
 	text-align: center;
-	padding: 5px;
+	padding: 5px 3px;
 	width: 100px;
 	min-height: 60px;
 	font-size: 10px;

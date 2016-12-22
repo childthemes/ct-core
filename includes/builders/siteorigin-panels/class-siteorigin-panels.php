@@ -130,6 +130,20 @@ class CT_Core_Siteorigin_Panels extends CT_Core_Builder {
         'none'      => esc_attr__( 'No Container', 'ctcore' ),
       )
     );
+    
+    $fields['breakpoint'] = array(
+      'name'    => esc_html__( 'Default Column Views', 'ctcore' ),
+      'type'    => 'select',
+      'group'   => 'layout',
+      'default' => 'md',
+      'priority'=> 2,
+      'options' => array(
+        'xs'  => esc_attr__( 'Mobile', 'ctcore' ),
+        'sm'  => esc_attr__( 'Tablet', 'ctcore' ),
+        'md'  => esc_attr__( 'Desktop', 'ctcore' ),
+        'lg'  => esc_attr__( 'Large Desktop', 'ctcore' ),
+      )
+    );
 
     return $fields;
   }

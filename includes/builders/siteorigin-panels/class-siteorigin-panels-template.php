@@ -42,6 +42,10 @@ class CT_Core_Siteorigin_Panels_Template extends CT_Core_Builder {
     add_filter( 'siteorigin_panels_row_style_attributes', '__return_empty_array', 99 );
     add_filter( 'siteorigin_panels_row_cell_classes', array( $this, 'row_cell_classes' ), 99, 2 );
     add_filter( 'siteorigin_panels_row_cell_attributes', array( $this, 'row_cell_atrs' ), 99, 2 );
+    
+    add_filter( 'siteorigin_panels_cell_style_attributes', '__return_empty_array', 999 );
+    
+    //add_filter( 'siteorigin_panels_widget_classes', array( $this, 'widget_classes' ), 99, 3 );
 	}
 
   /**
@@ -211,9 +215,10 @@ class CT_Core_Siteorigin_Panels_Template extends CT_Core_Builder {
         $grid_temp[] = $data;
       }
     }
-
+    
     $class_ratio = !empty( $grid_temp[ $ct_so_cell ]['weight'] ) ? floatval($grid_temp[ $ct_so_cell ]['weight']) : 1;
-    $classes[] = 'col-md-'.round( $class_ratio * 12 );
+    $class_views = !empty( $row_data['grids'][ $ct_so_grid ]['style']['breakpoint'] ) ? esc_attr( $row_data['grids'][ $ct_so_grid ]['style']['breakpoint'] ) : 'md';
+    $classes[] = 'col-' . $class_views . '-' . round( $class_ratio * 12 );
 
     if ( !empty($ct_so_cell_class) ) {
       $classes[] = $ct_so_cell_class;
@@ -236,6 +241,16 @@ class CT_Core_Siteorigin_Panels_Template extends CT_Core_Builder {
       unset( $attrs['id'] );
 
     return $attrs;
+  }
+  
+  /**
+	 * Widget wrapper css class.
+    *
+	 * @since  1.0.0
+	 * @return mixed
+	 */
+  public function widget_classes( $classes, $widget, $instance ) {
+    return array_diff( $classes, array( 'so-panel' ) );
   }
 
 }

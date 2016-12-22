@@ -207,9 +207,7 @@ class CT_Core {
 	 *
 	 * @since     1.0.0
 	 */
-	public function front_scripts() {
-		wp_enqueue_style( CT_SLUG.'-front', ctcore_css( 'admin-widget-icon' ), array(), CT_VERSION );
-	}
+	public function front_scripts() {}
 
   /**
 	 * Admin area scripts & styles.

@@ -30,17 +30,21 @@ $icons = apply_filters( 'ctcore_iconpicker_icons', array() );
 					<?php endforeach; ?>
 				</select>
 			</div>
-			<div class="search-wrap" style="display:none">
-				<input class="widefat" type="text" name="iconpicker-search" value="" placeholder="<?php esc_html_e('Search Icon...','ctcore'); ?>" readonly>
+			<div class="search-wrap">
+				<input class="widefat" type="search" id="iconpicker-search" name="iconpicker-search" value="" placeholder="<?php esc_html_e('Search...','ctcore'); ?>">
+        <input type="hidden" id="iconpicker-value" name="iconpicker-value" value="" />
 			</div>
 		</header>
 		<section id="iconlist">
 		<?php foreach ( $icons as $i_key => $i_group ) : 
       if ( empty( $i_group['icon'] ) || !is_array( $i_group['icon'] ) ) continue; ?>
-		  <div class="icon-cat-wrap <?php echo esc_attr( $i_key ) ?>" data-cat="<?php echo esc_attr( $i_key ) ?>">
+		  <div class="icon-cat-wrap <?php echo esc_attr( $i_key ) ?>-group" data-cat="<?php echo esc_attr( $i_key ) ?>">
 		    <?php foreach ( $i_group['icon'] as $k_icon => $v_icon ) : ?>
 		    <?php $icon_prefix = !empty( $i_group['prefix'] ) ? esc_attr( $i_group['prefix'] ) : ''; ?>
-		    <div class="column"><i class="<?php echo esc_attr( $icon_prefix . $k_icon ) ?> icon"></i><?php echo esc_html( $v_icon ) ?></div>
+		    <div class="column">
+          <i class="<?php echo esc_attr( $icon_prefix . $k_icon ) ?> icon"></i>
+          <span><?php echo esc_html( $v_icon ) ?></span>
+        </div>
 		    <?php endforeach; ?>
       </div>
 		<?php endforeach; ?>

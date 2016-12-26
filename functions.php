@@ -53,6 +53,22 @@ function ctcore_remove_theme_cache() {
 }
 add_action( 'switch_theme', 'ctcore_remove_theme_cache' );
 
+/**
+ * Write log file.
+  *
+ * @since 	1.0.0
+ * @param 	string    $log      message log to write
+ * @param 	string    $file     custom log file to write
+ */
+function ctcore_log( $log, $file = '' ) {
+	$file = ( !empty($file) && file_exists($file) ) ? $file : ABSPATH.'/ctcore-debug.log';
+  if ( true === WP_DEBUG ) {
+    if ( is_array( $log ) || is_object( $log ) ) {
+      $log  = print_r( $log, true );
+    }
+    error_log( '['.date('Y-m-d h:i:sa').'] '.$log."\n", 3, $file );
+  }
+}
 
 /**
  * Get all sub-directory in a directory.
@@ -279,7 +295,8 @@ function is_plugin_active_by_slug( $plugin ) {
     return false;
   }
 
-  $plugin = $plugin.'/'.$plugin.'.php';
+  $plugin_file = ( 'contact-form-7' === $plugin ) ? 'wp-contact-form-7' : $plugin;
+  $plugin = $plugin.'/'.$plugin_file.'.php';
 
   $network_active = false;
 	if ( is_multisite() ) {
@@ -291,3 +308,15 @@ function is_plugin_active_by_slug( $plugin ) {
 	return in_array( $plugin, get_option( 'active_plugins', array() ) ) || $network_active;
 }
 endif;
+
+/**
+ * Test for developemnt only.
+ *
+ * @since 	1.0.0
+ */
+function ctcore_notice_debug() {
+	global $CT_Core;
+
+  var_dump( get_option( 'active_plugins', array() ) );
+}
+//add_action( 'admin_notices', 'ctcore_notice_debug' );

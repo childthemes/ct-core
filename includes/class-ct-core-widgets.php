@@ -367,6 +367,26 @@ class CT_Widget extends WP_Widget {
 	}
 
 	/**
+	 * Parse default value for fields
+   *
+	 * @since		1.0.0
+   *
+   * @return array instance
+	 */
+	public function parse_defaults( $instance ) {
+    $defaults = array();
+		$fields = $this->settings;
+    foreach ( $fields as $key => $field ) {
+      if ( !isset( $instance[ $key ] ) ) {
+        $defaults[ $key ] = isset( $field['std'] ) ? $field['std'] : '';
+      } else {
+        $defaults[ $key ] = $instance[ $key ];
+      }
+    }
+    return (object)$defaults;
+	}
+
+	/**
 	 * Convert array to HTML attributes
 	 *
 	 * @since		1.0.0
@@ -561,7 +581,7 @@ class CT_Widget extends WP_Widget {
 				case 'term-select' :
 					unset( $atts['value'] );
 					if ( ! empty( $setting[ 'taxonomy' ] ) && taxonomy_exists( $setting[ 'taxonomy' ] ) ) :
-						$term_field = isset( $settings['field'] ) ? esc_attr($settings['field']) : 'term_id';
+						$term_field = isset( $setting['field'] ) ? esc_attr($setting['field']) : 'term_id';
 						$tax_name		= get_taxonomy( $setting[ 'taxonomy' ] )->label;
 						$options 		= array();
 						$terms 	 		= get_terms( array(

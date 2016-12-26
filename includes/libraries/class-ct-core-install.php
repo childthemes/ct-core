@@ -42,25 +42,6 @@ class CT_Core_Install {
 		}
 	}
 
-	/**
-	 * Activate plugin Check.
-	 *
-	 * @since     1.0.0
-	 *
-	 * @return    boolean
-	 */
-	public function is_active() {
-		$network_active = false;
-		$plugin = 'ct-core/ct-core.php';
-		if ( is_multisite() ) {
-			$plugins = get_site_option( 'active_sitewide_plugins' );
-			if ( isset( $plugins[ $plugin ] ) ) {
-				$network_active = true;
-			}
-		}
-		return in_array( $plugin, get_option( 'active_plugins' ) ) || $network_active;
-	}
-
   /**
 	 * Activate function.
 	 *

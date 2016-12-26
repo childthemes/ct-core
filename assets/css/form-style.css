@@ -1,0 +1,37 @@
+div.wpcf7 .wpcf7-submit.disabled i.fa,
+div.wpcf7 .wpcf7-submit i.fa.fa-spin {
+  display: none;
+}
+div.wpcf7 .wpcf7-submit.disabled i.fa.fa-spin {
+  display: inline-block;
+}
+div.wpcf7 .ajax-loader,
+div.wpcf7 .screen-reader-response {
+  display: none;
+}
+div.wpcf7 .ajax-loader.is-active {
+  display: inline-block;
+}
+div.wpcf7 div.ajax-error {
+  display: none;
+}
+div.wpcf7 .wpcf7-display-none {
+  display: none;
+}
+div.wpcf7 .form-inline .form-group {
+  max-width: 250px;
+}
+div.wpcf7 .input-group-addon img {
+  height: 100%;
+  width: auto;
+  max-width: none !important;
+  border-radius: 5px;
+}
+div.wpcf7 .input-group-addon.input-group-has-image {
+  padding: 0;
+}
+div.wpcf7 .wpcf7-radio .form-control-feedback,
+div.wpcf7 .wpcf7-checkbox .form-control-feedback,
+div.wpcf7 .wpcf7-acceptance .form-control-feedback {
+  display: block;
+}

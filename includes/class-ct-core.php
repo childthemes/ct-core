@@ -88,6 +88,7 @@ class CT_Core {
 		$this->load_dependencies();
 
 		add_action( 'plugins_loaded', array( $this, 'set_locale' ) );
+    add_action( 'activated_plugin', array( $this, 'reorder_plugins' ) );
 		add_action( 'admin_init', array( $this, 'set_features' ) );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'front_scripts' ) );
@@ -230,6 +231,35 @@ class CT_Core {
       return $this->{$feature};
     }
     return false;
+	}
+
+	/**
+	 * Reorder how plugin loaded by WordPress.
+	 *
+	 * @since     1.0.0
+	 *
+	 * @return    void
+	 */
+	public function reorder_plugins() {
+
+    $new_plugins = array();
+    $ctcore = 'ct-core/ct-core.php';
+
+    if ( is_multisite() ) {
+      $plugins = get_site_option( 'active_sitewide_plugins', array() );
+      if ( array_key_exists( $ctcore, $plugins ) ) {
+        $new_plugins[ $ctcore ] = $plugins[ $ctcore ];
+        unset( $plugins[ $ctcore ] );
+        $plugins = $new_plugins + $plugins;
+        update_option( 'active_sitewide_plugins', $plugins );
+      }
+    }
+
+    $plugins = get_option( 'active_plugins', array() );
+    array_unshift( $plugins, $ctcore );
+    update_option( 'active_plugins', array_unique( $plugins ) );
+
+    return true;
 	}
 
 	/**

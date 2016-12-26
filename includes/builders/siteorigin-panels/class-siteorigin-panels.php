@@ -32,10 +32,7 @@ class CT_Core_Siteorigin_Panels extends CT_Core_Builder {
 	 */
 	public function init() {
 
-    add_action( 'wp_head', array( $this, 'removeinline_css' ), 11 );
-    add_action( 'wp_footer', array( $this, 'removeinline_css' ), 9 );
-
-    add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ), 99 );
+    add_action( 'plugins_loaded', array( $this, 'remove_so_hooks' ) );
     add_action( 'siteorigin_panel_enqueue_admin_styles', array( $this, 'add_admin_style' ) );
 
     add_action( 'admin_print_scripts-post-new.php', array( $this, 'add_admin_script' ), 9, 2 );
@@ -50,8 +47,10 @@ class CT_Core_Siteorigin_Panels extends CT_Core_Builder {
     add_filter( 'siteorigin_panels_row_style_fields', array( $this, 'set_row_fields' ), 99 );
 	}
 
-  public function removeinline_css() {
-    $GLOBALS['siteorigin_panels_inline_css'] = array();
+  public function remove_so_hooks() {
+    remove_action('wp_head', 'siteorigin_panels_print_inline_css', 12);
+    remove_action('wp_footer', 'siteorigin_panels_print_inline_css');
+    remove_action('wp_enqueue_scripts', 'siteorigin_panels_enqueue_styles', 1);
   }
 
   /**
@@ -59,11 +58,7 @@ class CT_Core_Siteorigin_Panels extends CT_Core_Builder {
 	 *
 	 * @since  1.0.0
 	 */
-  public function enqueue_styles() {
-    if ( wp_style_is( 'siteorigin-panels-front' ) ) {
-      wp_dequeue_style( 'siteorigin-panels-front' );
-    }
-  }
+  public function enqueue_styles() {}
 
   /**
 	 * Enqueue scripts and styles on admin area.
